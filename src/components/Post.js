@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
-import { HeartIcon, MicrophoneIcon, PlayIcon } from '@heroicons/react/outline';
-import { HeartIcon as Liked,  } from '@heroicons/react/solid';
+import { HeartIcon, MicrophoneIcon, PauseIcon, PlayIcon } from '@heroicons/react/outline';
+import { ArrowRightIcon, HeartIcon as Liked, TrashIcon,  } from '@heroicons/react/solid';
 import Loader from 'react-loader-spinner';
 import PostComment from './PostComment';
 import { selectUserInfo } from '../features/appSlice';
@@ -17,6 +17,7 @@ const Post = ({ post }) => {
   const audioRef = useRef(null)
 
   // comment recording stuff
+  const [recordedCommentStatus, setRecordedCommentStatus] = useState('stopped');
   const [mediaBlob, setMediaBlob] = useState(null)
   const [recordState, setRecordState] = useState(null);
   const commentAudioRef = useRef(null);
@@ -75,9 +76,7 @@ const Post = ({ post }) => {
     //         .then(url => {
     //           postRef.doc(doc.id).update({ recording: url})
 
-    //           setMediaBlob(null)
-    //           setRecordState(RecordState.NONE);
-    //           audioRef.current.src = "";
+    // put the delete recorded comment function here
               
     //         }))
           
@@ -97,6 +96,22 @@ const Post = ({ post }) => {
 
   const onStop = (audioData) => {
     setMediaBlob(audioData)
+  }
+
+  function recordedCommentToggle () {
+    if (recordedCommentStatus == 'stopped') {
+      commentAudioRef?.current.play();
+      setRecordedCommentStatus('playing')
+    } else {
+      commentAudioRef?.current.pause()
+      setRecordedCommentStatus('stopped')
+    }
+  }
+
+  function deleteRecordedComment () {
+    setMediaBlob(null)
+    setRecordState(RecordState.NONE);
+    commentAudioRef.current.src = "";
   }
   // -----------------------
 
@@ -124,10 +139,30 @@ const Post = ({ post }) => {
               {post.likes.includes(userInfo?.uid) ? <Liked className="h-7 text-red-400 mx-auto" /> : <HeartIcon className="h-7 text-gray-400 mx-auto" />}
             </button>
             <> {/* * * * * */}
-            <button className="p-2 rounded-xl bg-gray-100 text-center flex-grow">
-              <MicrophoneIcon className="h-7 text-gray-400 mx-auto" />
-            </button>
-            <audio src={mediaBlob?.url} controls autoPlay controlsList="nodownload" className="hidden" ref={commentAudioRef} />
+            
+            {mediaBlob ? (
+              <>
+              <button onClick={recordedCommentToggle} className="p-2 rounded-xl bg-gray-100 text-center flex-grow">
+                {recordedCommentStatus == 'stopped' ? (
+                  <PlayIcon className="h-7 text-gray-400 mx-auto" />
+                ) : (
+                  <PauseIcon className="h-7 text-gray-400 mx-auto" />
+                )}
+                
+              </button>
+              <button onClick={deleteRecordedComment} className={`p-2 rounded-xl bg-gray-100 text-center flex-grow hover:bg-red-100`}>
+                <TrashIcon className="h-7 text-gray-400 mx-auto" />
+              </button>
+              <button onClick={uploadComment} className="p-2 rounded-xl bg-green-300 text-center flex-grow">
+                <ArrowRightIcon className="h-7 text-gray-100 mx-auto" />
+              </button>
+              </>
+            ) : (
+              <button onClick={recordToggle} className="p-2 rounded-xl bg-gray-100 text-center flex-grow">
+                <MicrophoneIcon className={`h-7 text-gray-400 mx-auto ${recordState == 'start' && 'text-red-400 animate-ping'}`} />
+              </button>
+            )}
+            <audio src={mediaBlob?.url} controls controlsList="nodownload" className="hidden" ref={commentAudioRef}  onPause={() => setRecordedCommentStatus('stopped')} />
             <AudioReactRecorder state={recordState} onStop={onStop} />
             </> {/* * * * * */}
           </div>
