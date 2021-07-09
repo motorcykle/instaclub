@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import UploadSection from '../components/UploadSection';
 import Feed from '../components/Feed';
+import db from '../firebase';
+import { selectUserInfo } from '../features/appSlice';
+import { useSelector } from 'react-redux';
+import { useCollection, useCollectionData } from 'react-firebase-hooks/firestore';
 
 const Home = () => {
-  const [uploads] = useState([
-    {
-      caption: 'Hello this is a caption. 🔥',
-      recording: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/1860-Scott-Au-Clair-de-la-Lune-05-09.ogg',
-      comments: [{ user: { username: "@testingCC1" }, recording: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/1860-Scott-Au-Clair-de-la-Lune-05-09.ogg' }],
-      user: { username: "@testing" }, // ref
-      likes: [],
-      id: "wefwef"
+  const userInfo = useSelector(selectUserInfo);
+  const [posts, setPosts] = useState();
+
+  useEffect(() => {
+    if (userInfo && userInfo?.following?.length > 0) {
+      const unsub = db
+        .collection('posts')
+        .where('user.uid', 'in', userInfo?.following)
+        .orderBy('timestamp', 'desc')
+        .onSnapshot(querySnapshot => { 
+          setPosts(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+        })
+      return unsub;
     }
-  ])
+  }, [userInfo]);
 
   return (
     <div className="flex-1">
       <div className="container pt-5">
         <UploadSection />
-        <Feed uploads={uploads} />
+        <Feed posts={posts} />
       </div>
     </div>
   );

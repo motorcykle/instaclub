@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import AudioReactRecorder, { RecordState } from 'audio-react-recorder'
+import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 import { UploadIcon } from '@heroicons/react/solid';
 import db, { auth, storage } from '../firebase';
 import firebase from 'firebase';
@@ -14,6 +14,7 @@ const UploadSection = () => {
   const [mediaBlob, setMediaBlob] = useState(null)
   const [recordState, setRecordState] = useState(null);
   const captionRef = useRef(null)
+  const audioRef = useRef(null);
   
 
   function recordToggle () {
@@ -47,20 +48,20 @@ const UploadSection = () => {
       .then(data => {
         data.get().then(doc => {
           storage
-            .ref(`Post Recordings/userid/postid/randomid`)
+            .ref(`Post Recordings/${userInfo?.uid}/${doc.id}`)
             .put(mediaBlob.blob)
             .then(data => data.ref.getDownloadURL()
             .then(url => {
               postRef.doc(doc.id).update({ recording: url})
+
+              e.target.reset()
+              setMediaBlob(null)
+              setRecordState(RecordState.NONE);
+              audioRef.current.src = "";
+              
             }))
-          db
-            .collection('users')
-            .doc(user.uid)
-            .update({
-              posts: firebase.firestore.FieldValue.arrayUnion(doc.ref)
-            });
+          
         })
-        // e.reset() + delete mediating
       })
       .catch(err => alert(err))
     }
@@ -71,7 +72,7 @@ const UploadSection = () => {
   return (
     <div className="rounded-2xl p-5 bg-gray-300 grid grid-cols-4 gap-4">
       <button onClick={recordToggle} className="bg-gray-100 p-2 rounded-full col-span-4 sm:col-span-1 focus:outline-none">{recordState !== 'start' ? 'Record' : 'Stop Recording'}</button>
-      <audio src={mediaBlob?.url} controls autoPlay controlsList="nodownload" className="w-full grid col-span-4 sm:col-span-3 focus:outline-none" />
+      <audio src={mediaBlob?.url} controls autoPlay controlsList="nodownload" className="w-full grid col-span-4 sm:col-span-3 focus:outline-none" ref={audioRef} />
       <AudioReactRecorder state={recordState} onStop={onStop} />
       <form onSubmit={uploadPost} className="flex col-span-4 space-x-4 items-center">
         <textarea maxLength="256" ref={captionRef} className="flex-grow p-2 focus:outline-none rounded-xl"></textarea>

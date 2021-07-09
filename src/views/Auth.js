@@ -34,11 +34,11 @@ const Auth = () => {
               db
                 .collection('users')
                 .doc(data.user.uid).set({
+                  uid: data.user.uid,
                   name: nameRef.current.value,
                   username: usernameRef.current.value.toLowerCase(),
                   followers: [],
                   following: [],
-                  posts: [],
                   profile_img: "https://i.stack.imgur.com/y9DpT.jpg"
                 })
             })

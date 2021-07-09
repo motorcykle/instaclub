@@ -30,9 +30,7 @@ function App() {
 
   useEffect(() => {
     const unsub = db.collection('users').doc(user?.uid).onSnapshot(docSnapshot => {
-      const copyData = {...docSnapshot.data()};
-      delete copyData.posts;
-      dispatch(setUserInfo(copyData));
+      dispatch(setUserInfo(docSnapshot.data()));
     }, err => {
       console.log(`Encountered error: ${err}`);
     });

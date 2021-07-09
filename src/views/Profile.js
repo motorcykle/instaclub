@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import firebase from 'firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { useSelector } from 'react-redux';
@@ -10,6 +11,8 @@ import db, { auth, storage } from '../firebase';
 const Profile = () => {
   const { username } = useParams();
   const [snapshot, loading, error] = useCollection(db.collection('users').where("username", '==', username));
+  const [userOfPage, setUserOfPage] = useState(null);
+  const [posts, setPosts] = useState([]);
   const userInfo = useSelector(selectUserInfo);
   const [user] = useAuthState(auth);
   const fileInputRef = useRef(null);
@@ -17,7 +20,18 @@ const Profile = () => {
 
   const isUser = username == userInfo?.username;
 
-  useEffect(() => { console.log(snapshot.docs[0].data()) }, [snapshot])
+  useEffect(() => { 
+    setUserOfPage(snapshot?.docs[0].data()) 
+  }, [snapshot])
+
+  useEffect(() => { 
+    if (userOfPage) {
+      const unsub = db.collection('posts').where('user.uid', '==', userOfPage.uid).onSnapshot(data => {
+        setPosts(data.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+      })
+      return unsub
+    }
+  }, [userOfPage])
 
   useEffect(() => {
     if (profileImg && user) {
@@ -41,6 +55,34 @@ const Profile = () => {
       })
   }
 
+  function followToggle () {
+    const usersRef = db.collection('users');
+
+    if (userInfo && userOfPage) {
+
+      if (userInfo?.following?.includes(userOfPage?.uid)) {
+        // if we follow this user already
+        usersRef.doc(userOfPage?.uid).update({
+          followers: firebase.firestore.FieldValue.arrayRemove(userInfo?.uid)
+        });
+        
+        usersRef.doc(userInfo?.uid).update({
+          following: firebase.firestore.FieldValue.arrayRemove(userOfPage?.uid)
+        });
+      } else {
+        // we dont follow this user already
+        usersRef.doc(userOfPage?.uid).update({
+          followers: firebase.firestore.FieldValue.arrayUnion(userInfo?.uid)
+        });
+        
+        usersRef.doc(userInfo?.uid).update({
+          following: firebase.firestore.FieldValue.arrayUnion(userOfPage?.uid)
+        });
+      }
+
+    }
+  }
+
   return (
     <div className="profile flex-1">
       <div className="profile__container container pt-5">
@@ -49,31 +91,35 @@ const Profile = () => {
           
           <div className="profileImg__container overflow-hidden h-40 w-40 rounded-full " onClick={() => isUser && fileInputRef.current.click()} >
             <input type="file" name="" className="hidden" ref={fileInputRef} onChange={({target}) => setProfileImg(target.files[0])} />
-            <img src={userInfo?.profile_img} alt="" className="w-full h-full object-cover" />
+            <img src={userOfPage?.profile_img} alt="" className="w-full h-full object-cover" />
           </div>
 
-          <h2 className="text-3xl mt-4">{userInfo?.name}</h2>
+          <h2 className="text-3xl mt-4">{userOfPage?.name}</h2>
 
-          <p className="font-bold">@{userInfo?.username}</p>
+          <p className="font-bold">@{userOfPage?.username}</p>
 
           <div className="flex space-x-2 sm:space-x-7 text-center my-5">
             <div className="followers">
-              <p>{userInfo?.followers.length || '0'}</p> <small className="font-bold">FOLLOWERS</small>
+              <p>{userOfPage?.followers.length || '0'}</p> <small className="font-bold">FOLLOWERS</small>
             </div>
             <div className="following">
-              <p>{userInfo?.following.length || '0'}</p> <small className="font-bold">FOLLOWING</small>
+              <p>{userOfPage?.following.length || '0'}</p> <small className="font-bold">FOLLOWING</small>
             </div>
             <div className="uploads">
-              <p>{userInfo?.uploads?.length || '0'}</p> <small className="font-bold">UPLOADS</small>
+              <p>{posts.length}</p> <small className="font-bold">UPLOADS</small>
             </div>
           </div>
 
-          {!isUser && <button className="bg-gray-300 text-gray-700 py-2 px-5 rounded-3xl">Follow</button>}
+          {!isUser && 
+          <button onClick={followToggle} className="bg-gray-300 text-gray-700 py-2 px-5 rounded-3xl">
+            {userInfo?.following?.includes(userOfPage?.uid) ? 'Unfollow' : 'Follow'}
+          </button>
+          }
 
 
         </div>
 
-        <Feed />
+        <Feed posts={posts} />
 
       </div>
     </div>

@@ -1,10 +1,15 @@
 import { BellIcon, LogoutIcon, UploadIcon, UserCircleIcon } from '@heroicons/react/outline';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { selectUserInfo } from '../features/appSlice';
 import { auth } from '../firebase';
-import NotificationPop from './NotificationPop';
+import SearchBar from './SearchBar';
 
 const Header = () => {
+  const userInfo = useSelector(selectUserInfo);
+
+
   return (
     <div className="shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-3">
@@ -12,11 +17,11 @@ const Header = () => {
           <h1 className="text-gray-600 text-2xl font-medium" >Insta<span className="font-bold">Club</span></h1>
         </Link>
 
+        <SearchBar />
+
         <div className="flex space-x-4 items-center">
-          <NotificationPop />
-          
           <button>
-            <Link to="/profile" >
+            <Link to={`/${userInfo?.username}`} >
               <UserCircleIcon className="h-7 text-gray-600" />
             </Link>
           </button>
