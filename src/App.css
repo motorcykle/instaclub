@@ -1,0 +1,13 @@
+.app {
+  min-height: 100vh;
+}
+
+.loader__container {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.container {
+  @apply px-2 sm:px-0 mx-auto;
+}
