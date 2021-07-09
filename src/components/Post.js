@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 import { HeartIcon, MicrophoneIcon, PauseIcon, PlayIcon } from '@heroicons/react/outline';
 import { ArrowRightIcon, HeartIcon as Liked, TrashIcon,  } from '@heroicons/react/solid';
@@ -6,7 +7,7 @@ import Loader from 'react-loader-spinner';
 import PostComment from './PostComment';
 import { selectUserInfo } from '../features/appSlice';
 import { useSelector } from 'react-redux';
-import db from '../firebase';
+import db, { storage } from '../firebase';
 import firebase from 'firebase';
 
 import './Post.css'
@@ -53,37 +54,35 @@ const Post = ({ post }) => {
 
   //  comment stuff 
   function uploadComment () {
-    // const postRef = db.collection('posts');
-    // if (user && mediaBlob && userInfo) {
-    //   postRef
-    //   .add({
-    //     caption: captionRef.current.value,
-    //     comments: [],
-    //     likes: [],
-    //     user: {
-    //       uid: user.uid,
-    //       username: userInfo.username,
-    //       profile_img: userInfo.profile_img
-    //     },
-    //     timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    //   })
-    //   .then(data => {
-    //     data.get().then(doc => {
-    //       storage
-    //         .ref(`Post Recordings/${userInfo?.uid}/${doc.id}`)
-    //         .put(mediaBlob.blob)
-    //         .then(data => data.ref.getDownloadURL()
-    //         .then(url => {
-    //           postRef.doc(doc.id).update({ recording: url})
-
-    // put the delete recorded comment function here
-              
-    //         }))
-          
-    //     })
-    //   })
-    //   .catch(err => alert(err))
-    // }
+    const postRef = db.collection('posts').doc(post.id);
+    if (mediaBlob && userInfo) {
+      const commentId = uuidv4();
+      storage
+        .ref(`Comment Recordings/${post?.user?.uid}/${commentId}`)
+        .put(mediaBlob.blob)
+        .then(data => data.ref.getDownloadURL()
+        .then(url => {
+          const comment = {
+            recording: url,
+            user: {
+              uid: userInfo.uid,
+              username: userInfo.username,
+              profile_img: userInfo.profile_img
+            },
+            timestamp: (new Date()).toUTCString(),
+            id: commentId
+          }
+          postRef.update({
+            comments: firebase.firestore.FieldValue.arrayUnion(comment)
+          })
+          .then(data => {
+            deleteRecordedComment();
+          })
+          .catch(err => {
+            alert(err)
+          })
+        }))
+    }
   }
 
   function recordToggle () {
@@ -117,7 +116,7 @@ const Post = ({ post }) => {
 
 
   return (
-    <div className="border-2 p-4 rounded-3xl w-full sm:w-4/6">
+    <div className="border-2 p-4 rounded-3xl w-full sm:w-4/6 max-h-80 overflow-y-scroll">
       <div className="post__container grid grid-cols-4 gap-3">
 
         <div className="post__content col-span-4 md:col-span-3">
@@ -179,9 +178,9 @@ const Post = ({ post }) => {
           
         </div>
 
-        <div className="post__comments flex flex-col items-center col-span-4 md:col-span-1">
+        <div className="post__comments flex flex-col items-center col-span-4 md:col-span-1 space-y-3 overflow-scroll">
           <p className="self-start mb-2 text-gray-400">Comments </p>
-          {post?.comments?.map(comment => <PostComment comment={comment} />)}
+          {post?.comments?.map(comment => <PostComment key={comment.id} comment={comment} />)}
         </div>
 
       </div>
