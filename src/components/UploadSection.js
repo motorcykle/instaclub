@@ -70,7 +70,7 @@ const UploadSection = () => {
 
 
   return (
-    <div className="rounded-2xl p-5 bg-gray-300 grid grid-cols-4 gap-4">
+    <div className="rounded-2xl p-5 bg-gray-600 grid grid-cols-4 gap-4 sm:w-4/6 mx-auto">
       <button onClick={recordToggle} className="bg-gray-100 p-2 rounded-full col-span-4 sm:col-span-1 focus:outline-none">{recordState !== 'start' ? 'Record' : 'Stop Recording'}</button>
       <audio src={mediaBlob?.url} controls autoPlay controlsList="nodownload" className="w-full grid col-span-4 sm:col-span-3 focus:outline-none" ref={audioRef} />
       <AudioReactRecorder state={recordState} onStop={onStop} />

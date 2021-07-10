@@ -1,4 +1,5 @@
 import { BellIcon, LogoutIcon, UploadIcon, UserCircleIcon } from '@heroicons/react/outline';
+import { HomeIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -14,7 +15,8 @@ const Header = () => {
     <div className="shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-3">
         <Link to="/">
-          <h1 className="text-gray-600 text-2xl font-medium" >Insta<span className="font-bold">Club</span></h1>
+          <HomeIcon className="h-5 text-gray-600 block sm:hidden" />
+          <h1 className="text-gray-600 text-2xl font-medium hidden sm:block" >Insta<span className="font-bold">Club</span></h1>
         </Link>
 
         <SearchBar />

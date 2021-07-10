@@ -26,7 +26,7 @@ const Profile = () => {
 
   useEffect(() => { 
     if (userOfPage) {
-      const unsub = db.collection('posts').where('user.uid', '==', userOfPage.uid).onSnapshot(data => {
+      const unsub = db.collection('posts').orderBy('timestamp', 'desc').where('user.uid', '==', userOfPage.uid).onSnapshot(data => {
         setPosts(data.docs.map(doc => ({ id: doc.id, ...doc.data() })))
       })
       return unsub
@@ -118,8 +118,9 @@ const Profile = () => {
 
 
         </div>
-
+        
         <Feed posts={posts} />
+        
 
       </div>
     </div>

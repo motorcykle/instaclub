@@ -18,6 +18,7 @@ const Post = ({ post }) => {
   const audioRef = useRef(null)
 
   // comment recording stuff
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const [recordedCommentStatus, setRecordedCommentStatus] = useState('stopped');
   const [mediaBlob, setMediaBlob] = useState(null)
   const [recordState, setRecordState] = useState(null);
@@ -116,8 +117,8 @@ const Post = ({ post }) => {
 
 
   return (
-    <div className="border-2 p-4 rounded-3xl w-full sm:w-4/6 max-h-80 overflow-y-scroll">
-      <div className="post__container grid grid-cols-4 gap-3">
+    <div className="border-2 p-4 rounded-3xl w-full sm:w-4/6">
+      <div className="post__container grid grid-cols-4 gap-3 max-h-80 overflow-y-scroll">
 
         <div className="post__content col-span-4 md:col-span-3">
           <div className="post__audio h-24 bg-gray-100 rounded-xl mb-2 cursor-pointer flex items-center justify-center" onClick={recordingToggle}>
@@ -178,9 +179,9 @@ const Post = ({ post }) => {
           
         </div>
 
-        <div className="post__comments flex flex-col items-center col-span-4 md:col-span-1 space-y-3 overflow-scroll">
-          <p className="self-start mb-2 text-gray-400">Comments </p>
-          {post?.comments?.map(comment => <PostComment key={comment.id} comment={comment} />)}
+        <div className="post__comments flex flex-col items-center col-span-4 md:col-span-1 space-y-3">
+          <button onClick={() => setCommentsOpen(prev => !prev)} className="self-start mb-2 text-gray-400">{commentsOpen ? 'Hide Comments' : `Show Comments (${post?.comments?.length})`}</button>
+          {commentsOpen && post?.comments?.map(comment => <PostComment key={comment.id} comment={comment} />)}
         </div>
 
       </div>
