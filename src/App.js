@@ -36,7 +36,8 @@ function App() {
     });
 
     return unsub;
-  }, [user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]) 
 
   return (
     <div className="app flex flex-col">
@@ -68,7 +69,7 @@ export default App;
 
 
 function PrivateRoute({ children, ...rest }) {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
 
   return (
     <Route

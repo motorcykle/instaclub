@@ -10,7 +10,7 @@ import db, { auth, storage } from '../firebase';
 
 const Profile = () => {
   const { username } = useParams();
-  const [snapshot, loading, error] = useCollection(db.collection('users').where("username", '==', username));
+  const [snapshot] = useCollection(db.collection('users').where("username", '==', username));
   const [userOfPage, setUserOfPage] = useState(null);
   const [posts, setPosts] = useState([]);
   const userInfo = useSelector(selectUserInfo);
@@ -18,7 +18,7 @@ const Profile = () => {
   const fileInputRef = useRef(null);
   const [profileImg, setProfileImg] = useState(null);
 
-  const isUser = username == userInfo?.username;
+  const isUser = username === userInfo?.username;
 
   useEffect(() => { 
     setUserOfPage(snapshot?.docs[0].data()) 
@@ -44,6 +44,7 @@ const Profile = () => {
         changeProfileImg(url)
       }))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileImg])
 
   function changeProfileImg (url) {

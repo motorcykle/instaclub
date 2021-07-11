@@ -1,4 +1,4 @@
-import { BellIcon, LogoutIcon, UploadIcon, UserCircleIcon } from '@heroicons/react/outline';
+import { LogoutIcon, UserCircleIcon } from '@heroicons/react/outline';
 import { HomeIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { useSelector } from 'react-redux';

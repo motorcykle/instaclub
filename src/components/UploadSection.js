@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 import { UploadIcon } from '@heroicons/react/solid';
 import db, { auth, storage } from '../firebase';

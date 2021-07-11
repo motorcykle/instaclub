@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 import { HeartIcon, MicrophoneIcon, PauseIcon, PlayIcon } from '@heroicons/react/outline';
@@ -26,7 +26,7 @@ const Post = ({ post }) => {
   // -----------------------
 
   function recordingToggle () {
-    if (recordingStatus == 'stopped') {
+    if (recordingStatus === 'stopped') {
       audioRef?.current.play();
       setRecordingStatus('playing')
     } else {
@@ -99,7 +99,7 @@ const Post = ({ post }) => {
   }
 
   function recordedCommentToggle () {
-    if (recordedCommentStatus == 'stopped') {
+    if (recordedCommentStatus === 'stopped') {
       commentAudioRef?.current.play();
       setRecordedCommentStatus('playing')
     } else {
@@ -123,7 +123,7 @@ const Post = ({ post }) => {
         <div className="post__content col-span-4 md:col-span-3">
           <div className="post__audio h-24 bg-gray-100 rounded-xl mb-2 cursor-pointer flex items-center justify-center" onClick={recordingToggle}>
             <audio src={post.recording} ref={audioRef} onPause={() => setRecordingStatus('stopped')} />
-            {recordingStatus == 'playing' ? (
+            {recordingStatus === 'playing' ? (
               <>
               <Loader type="Bars" color="#9CA3AF" height={40} width={40}/>
               <Loader type="Bars" color="#9CA3AF" height={40} width={40}/>
@@ -143,7 +143,7 @@ const Post = ({ post }) => {
             {mediaBlob ? (
               <>
               <button onClick={recordedCommentToggle} className="p-2 rounded-xl bg-gray-100 text-center flex-grow">
-                {recordedCommentStatus == 'stopped' ? (
+                {recordedCommentStatus === 'stopped' ? (
                   <PlayIcon className="h-7 text-gray-400 mx-auto" />
                 ) : (
                   <PauseIcon className="h-7 text-gray-400 mx-auto" />
@@ -159,7 +159,7 @@ const Post = ({ post }) => {
               </>
             ) : (
               <button onClick={recordToggle} className="p-2 rounded-xl bg-gray-100 text-center flex-grow">
-                <MicrophoneIcon className={`h-7 text-gray-400 mx-auto ${recordState == 'start' && 'text-red-400 animate-ping'}`} />
+                <MicrophoneIcon className={`h-7 text-gray-400 mx-auto ${recordState === 'start' && 'text-red-400 animate-ping'}`} />
               </button>
             )}
             <audio src={mediaBlob?.url} controls controlsList="nodownload" className="hidden" ref={commentAudioRef}  onPause={() => setRecordedCommentStatus('stopped')} />

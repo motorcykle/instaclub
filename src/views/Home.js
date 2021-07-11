@@ -5,7 +5,6 @@ import Feed from '../components/Feed';
 import db from '../firebase';
 import { selectUserInfo } from '../features/appSlice';
 import { useSelector } from 'react-redux';
-import { useCollection, useCollectionData } from 'react-firebase-hooks/firestore';
 
 const Home = () => {
   const userInfo = useSelector(selectUserInfo);

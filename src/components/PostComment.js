@@ -7,7 +7,7 @@ const PostComment = ({ comment }) => {
   const audioRef = useRef(null)
 
   function recordingToggle () {
-    if (recordingStatus == 'stopped') {
+    if (recordingStatus === 'stopped') {
       audioRef.current.play();
       setRecordingStatus('playing')
     } else {
@@ -22,7 +22,7 @@ const PostComment = ({ comment }) => {
       <h4 className="font-semibold text-sm">@{comment.user.username}</h4>
       <div className="post__audio py-3 bg-white rounded-xl cursor-pointer flex items-center justify-center mt-3" onClick={recordingToggle}>
         <audio src={comment.recording} ref={audioRef} onPause={() => setRecordingStatus('stopped')} />
-        {recordingStatus == 'playing' ? (
+        {recordingStatus === 'playing' ? (
           <Loader type="Bars" color="#9CA3AF" height={"1.75rem"} width={"1.75rem"}/>
         ) : (
           <PlayIcon className="h-7 text-gray-400" />

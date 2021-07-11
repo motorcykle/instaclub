@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useCollectionDataOnce, useCollectionOnce } from 'react-firebase-hooks/firestore';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import db from '../firebase';
 
