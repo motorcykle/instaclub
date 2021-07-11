@@ -75,7 +75,7 @@ const UploadSection = () => {
       <audio src={mediaBlob?.url} controls autoPlay controlsList="nodownload" className="w-full grid col-span-4 sm:col-span-3 focus:outline-none" ref={audioRef} />
       <AudioReactRecorder state={recordState} onStop={onStop} />
       <form onSubmit={uploadPost} className="flex col-span-4 space-x-4 items-center">
-        <textarea maxLength="256" ref={captionRef} className="flex-grow p-2 focus:outline-none rounded-xl"></textarea>
+        <textarea maxLength="256" ref={captionRef} className="flex-grow p-2 focus:outline-none rounded-xl" placeholder="Enter caption..."></textarea>
         <button className="bg-gray-100 p-4 rounded-full">
           <UploadIcon className="h-6 text-gray-500" />
         </button>

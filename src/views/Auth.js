@@ -61,36 +61,32 @@ const Auth = () => {
           </p>
         </div>
         <div className="auth__options">
-          <div className="auth__signup mb-3">
-            <button onClick={() => setShowingOption('signup')} className={`py-2 px-8 w-full bg-gray-800 rounded-md text-gray-100 font-medium ${showingOption === 'signup' && 'opacity-50 cursor-default'}`}>Sign Up</button>
-            
-            {showingOption === 'signup' && (
-              <form onSubmit={signUp} className="flex flex-col space-y-2 mt-3">
-                <input type="text" name="fullname" placeholder="Full name" className="" required ref={nameRef}/>
-                <input type="text" name="username" placeholder="Choose a username" className="" required ref={usernameRef} />
-                <input type="email" name="email" placeholder="Email address" className="" required onChange={({target}) => setEmail(target.value)} value={email}/>
-                <input type="password" name="password" minLength="8" required placeholder="Password (8 characters)" className="" onChange={({target}) => setPassword(target.value)} value={password}/>
-                <button type="submit" className="rounded-full w-max self-center animate-pulse">
-                  <ArrowCircleRightIcon className="h-10 text-gray-800" />
-                </button>
-              </form>
-            )}
-            
-          </div>
-          <div className="auth__signin">
-            <button onClick={() => setShowingOption('signin')} className={`py-2 px-8 w-full bg-gray-800 rounded-md text-gray-100 font-medium ${showingOption === 'signin' && 'opacity-50 cursor-default'}`}>Sign In</button>
-            
-            {showingOption === 'signin' && (
-              <form onSubmit={signIn} className="flex flex-col space-y-2 mt-3">
-                <input type="email" name="email" placeholder="Email address" className="" required onChange={({target}) => setEmail(target.value)} value={email}/>
-                <input type="password" name="password" minLength="8" required placeholder="Password (8 characters)" className="" onChange={({target}) => setPassword(target.value)} value={password}/>
-                <button type="submit" className="rounded-full w-max self-center animate-pulse">
-                  <ArrowCircleRightIcon className="h-10 text-gray-800" />
-                </button>
-              </form>
-            )}
-          
-          </div>
+          <button onClick={() => setShowingOption('signup')} className={`py-2 px-8 w-full bg-gray-800 rounded-md text-gray-100 font-medium mb-2 ${showingOption === 'signup' && 'opacity-50 cursor-default'}`}>Sign Up</button>
+          <button onClick={() => setShowingOption('signin')} className={`py-2 px-8 w-full bg-gray-800 rounded-md text-gray-100 font-medium ${showingOption === 'signin' && 'opacity-50 cursor-default'}`}>Sign In</button>
+        </div>
+        <div className="auth__forms">
+          {showingOption === 'signup' && (
+            <form onSubmit={signUp} className="flex flex-col space-y-2 mt-3">
+              <input type="text" name="fullname" placeholder="Full name" className="" required ref={nameRef}/>
+              <input type="text" name="username" placeholder="Choose a username" className="" required ref={usernameRef} />
+              <input type="email" name="email" placeholder="Email address" className="" required onChange={({target}) => setEmail(target.value)} value={email}/>
+              <input type="password" name="password" minLength="8" required placeholder="Password (8 characters)" className="" onChange={({target}) => setPassword(target.value)} value={password}/>
+              <button type="submit" className="rounded-full w-max self-center flex items-center">
+                Sign Up
+                <ArrowCircleRightIcon className="h-10 text-gray-800 ml-2" />
+              </button>
+            </form>
+          )}
+          {showingOption === 'signin' && (
+            <form onSubmit={signIn} className="flex flex-col space-y-2 mt-3">
+              <input type="email" name="email" placeholder="Email address" className="" required onChange={({target}) => setEmail(target.value)} value={email}/>
+              <input type="password" name="password" minLength="8" required placeholder="Password (8 characters)" className="" onChange={({target}) => setPassword(target.value)} value={password}/>
+              <button type="submit" className="rounded-full w-max self-center flex items-center">
+                Sign In
+                <ArrowCircleRightIcon className="h-10 text-gray-800 ml-2" />
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </div>

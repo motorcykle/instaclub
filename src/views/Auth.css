@@ -1,3 +1,3 @@
-.auth__options input {
+.auth__forms input {
   @apply text-xl border-2 p-2 rounded-xl focus:outline-none;
 }
