@@ -172,9 +172,9 @@ const Post = ({ post }) => {
                 <img src={post.user.profile_img} alt="" className="h-full w-full" />
               </div>
               <h4 className="font-semibold text-sm flex-1">@{post.user.username}</h4>
-              <p className="opacity-50 text-xs">{new Date(Date(post.timestamp)).toDateString()}</p>
+              <p className="opacity-50 text-xs">{post?.timestamp.toDate().toLocaleString()}</p>
             </div>
-            <p className="mt-1 mb-4">{post.caption}</p>
+            <p className="mt-2 mb-4">{post.caption}</p>
           </div>
           
         </div>

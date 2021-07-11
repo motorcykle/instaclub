@@ -18,7 +18,7 @@ const PostComment = ({ comment }) => {
 
   return (
     <div className="comment py-3 px-4 w-full rounded-xl bg-gray-100 text-center overflow-x-scroll">
-      <p className="opacity-50 text-xs">{new Date(Date(comment.timestamp)).toLocaleDateString()}</p>
+      <p className="opacity-50 text-xs">{(new Date(comment?.timestamp)).toLocaleDateString()}</p>
       <h4 className="font-semibold text-sm">@{comment.user.username}</h4>
       <div className="post__audio py-3 bg-white rounded-xl cursor-pointer flex items-center justify-center mt-3" onClick={recordingToggle}>
         <audio src={comment.recording} ref={audioRef} onPause={() => setRecordingStatus('stopped')} />
